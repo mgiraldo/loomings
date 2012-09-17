@@ -18,7 +18,7 @@
 <script type="text/javascript">
 // var _M = (function () {
 
-	var canvas, stage, shape, image, star, img;
+	var canvas, stage, shape, image, mask, img;
 
 	var update = true;
 
@@ -36,8 +36,23 @@
 		// create a new stage and point it at our canvas:
 		stage = new createjs.Stage(canvas);
 
-		window.addEventListener('resize', resizeCanvas, false);
+		createjs.Touch.enable(stage);
+
+		addListeners();
+
 		resizeCanvas();
+	}
+
+	function addListeners() {
+		window.addEventListener('resize', resizeCanvas, false);
+		stage.onPress = function(mouseEvent) {
+			// console.log("pressed");
+			mouseEvent.onMouseMove = function(mouseEvent) {
+				mask.rotation = mouseEvent.stageY;
+				update = true;
+				// console.log("mouse moved: "+mouseEvent.stageX+","+mouseEvent.stageY);
+			}
+		}
 	}
 
     function resizeCanvas() {
@@ -50,13 +65,13 @@
 		console.log("hi");
 		
 		// masks can only be shapes.
-		star = new createjs.Shape();
+		mask = new createjs.Shape();
 		// the mask's position will be relative to the parent of its target:
-		star.x = 100;
-		star.y = 100;
+		mask.x = 100;
+		mask.y = 100;
 		
 		var maskShape;
-		maskShape = star.graphics.beginBitmapFill(img);
+		maskShape = mask.graphics.beginBitmapFill(img);
 		if (debug) {
 			maskShape = maskShape.beginStroke("#FF0").setStrokeStyle(5);
 		}
@@ -67,12 +82,12 @@
 		
 		var bmp = new createjs.Bitmap(img);
 		stage.addChild(bmp);
-		bmp.mask = star;
+		bmp.mask = mask;
 		bmp.x = 100;
 		
 		// note that the shape can be used in the display list as well if you'd like, or
 		// we can reuse the Graphics instance in another shape if we'd like to transform it differently.
-		stage.addChild(star);
+		stage.addChild(mask);
 
 		createjs.Ticker.addListener(window);
 
