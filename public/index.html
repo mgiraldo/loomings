@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>monty</title>
+	<script src="easeljs-0.5.0.min.js" type="text/javascript"></script>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+<div id="wrapper">
+	<canvas id="testCanvas" width="960" height="400"></canvas>
+</div>
+<script type="text/javascript">
+// var _M = (function () {
+
+	var canvas, stage, shape, image, star, img;
+
+	var update = true;
+
+	var debug = true;
+
+	
+	function init() {
+		//wait for the image to load
+		img = new Image();
+		img.onload = handleImageLoad;
+		img.src = "test.jpg";
+
+		canvas = document.getElementById("testCanvas");
+
+		// create a new stage and point it at our canvas:
+		stage = new createjs.Stage(canvas);
+
+		window.addEventListener('resize', resizeCanvas, false);
+		resizeCanvas();
+	}
+
+    function resizeCanvas() {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		update = true;
+    }
+
+	function handleImageLoad() {
+		console.log("hi");
+		
+		// masks can only be shapes.
+		star = new createjs.Shape();
+		// the mask's position will be relative to the parent of its target:
+		star.x = 100;
+		star.y = 100;
+		
+		var maskShape;
+		maskShape = star.graphics.beginBitmapFill(img);
+		if (debug) {
+			maskShape = maskShape.beginStroke("#FF0").setStrokeStyle(5);
+		}
+		maskShape.drawCircle(0,0,300).endStroke();
+
+		var bg = new createjs.Bitmap(img);
+		stage.addChild(bg);
+		
+		var bmp = new createjs.Bitmap(img);
+		stage.addChild(bmp);
+		bmp.mask = star;
+		bmp.x = 100;
+		
+		// note that the shape can be used in the display list as well if you'd like, or
+		// we can reuse the Graphics instance in another shape if we'd like to transform it differently.
+		stage.addChild(star);
+
+		createjs.Ticker.addListener(window);
+
+		console.log(stage);
+	}
+
+	function tick() {
+		// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+		if (update) {
+			update = false; // only update once
+			stage.update();
+		}
+	}
+
+	init();
+
+	// return this;
+// }());
+</script>
+
+</body>
+</html>
