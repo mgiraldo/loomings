@@ -9,29 +9,30 @@
 			padding: 0;
 			margin: 0;
 		}
+		#puzzleCanvas {
+			background: #000;
+		}
 	</style>
 </head>
 <body>
 <div id="wrapper">
-	<canvas id="testCanvas" width="960" height="400"></canvas>
+	<canvas id="puzzleCanvas" width="960" height="400"></canvas>
 </div>
 <script type="text/javascript">
 // var _M = (function () {
 
-	var canvas, stage, shape, image, mask, img;
+	var canvas, stage, shape, masks = [], img, backgroundImage, imageRatio = 1;
 
-	var update = true;
+	var imageLoaded = false, update = true;
 
-	var debug = true;
+	var circleCenter = [835,666];
+	var circleData = [{radius:300,axis:'stageX',power:2}, {radius:150,axis:'stageY',power:3}, {radius:100,axis:'stageX',power:4}];
+
+	var debug = false;
 
 	
 	function init() {
-		//wait for the image to load
-		img = new Image();
-		img.onload = handleImageLoad;
-		img.src = "/images/test.jpg";
-
-		canvas = document.getElementById("testCanvas");
+		canvas = document.getElementById("puzzleCanvas");
 
 		// create a new stage and point it at our canvas:
 		stage = new createjs.Stage(canvas);
@@ -41,6 +42,11 @@
 		addListeners();
 
 		resizeCanvas();
+
+		//wait for the image to load
+		img = new Image();
+		img.onload = handleImageLoad;
+		img.src = "/images/test.jpg";
 	}
 
 	function addListeners() {
@@ -48,50 +54,112 @@
 		stage.onPress = function(mouseEvent) {
 			// console.log("pressed");
 			mouseEvent.onMouseMove = function(mouseEvent) {
-				mask.rotation = mouseEvent.stageY;
+				var i, l = circleData.length;
+				for (i=0;i<l;i++) {
+					mm = masks[i].bmp;
+					mm.rotation = mouseEvent[circleData[i].axis] * (circleData[i].power);
+					console.log(" => " + mm.x + ":" + mm.y);
+				}
 				update = true;
 				// console.log("mouse moved: "+mouseEvent.stageX+","+mouseEvent.stageY);
 			}
 		}
 	}
 
-    function resizeCanvas() {
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-		update = true;
-    }
-
 	function handleImageLoad() {
-		console.log("hi");
+		imageLoaded = true;
+		// check ratio of image
+		imageRatio = img.width / img.height;
+		backgroundImage = new createjs.Bitmap(img);
+		stage.addChild(backgroundImage);
 		
-		// masks can only be shapes.
-		mask = new createjs.Shape();
-		// the mask's position will be relative to the parent of its target:
-		mask.x = 100;
-		mask.y = 100;
-		
-		var maskShape;
-		maskShape = mask.graphics.beginBitmapFill(img);
-		if (debug) {
-			maskShape = maskShape.beginStroke("#FF0").setStrokeStyle(5);
-		}
-		maskShape.drawCircle(0,0,300).endStroke();
-
-		var bg = new createjs.Bitmap(img);
-		stage.addChild(bg);
-		
-		var bmp = new createjs.Bitmap(img);
-		stage.addChild(bmp);
-		bmp.mask = mask;
-		bmp.x = 100;
-		
-		// note that the shape can be used in the display list as well if you'd like, or
-		// we can reuse the Graphics instance in another shape if we'd like to transform it differently.
-		stage.addChild(mask);
-
 		createjs.Ticker.addListener(window);
 
-		console.log(stage);
+		createMasks();
+		randomizePuzzle();
+		resizeCanvas();
+		// console.log(stage);
+	}
+
+    function resizeCanvas() {
+    	if (imageLoaded) {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			scaleImage();
+			update = true;
+    	}
+    }
+
+	function scaleImage () {
+		var sc, cw, ch, cr, newx = 0, newy = 0;
+		cw = canvas.width;
+		ch = canvas.height;
+		cr = cw / ch;
+		if (cr < imageRatio) {
+			// scale based on width
+			sc = cw / img.width;
+			backgroundImage.x = 0;
+			newy = (ch - (img.height*sc))/2;
+		} else {
+			// scale based on height
+			sc = ch / img.height;
+			newx = (cw - (img.width*sc))/2;
+		}
+		backgroundImage.x = newx;
+		backgroundImage.y = newy;
+		backgroundImage.scaleX = backgroundImage.scaleY = sc;
+		console.log(backgroundImage.image.width + " -> " + cr + "," + newx + ":" + newy);
+		// resize masks
+		var i, l = circleData.length;
+		var mm, ma;
+		for (i=0;i<l;i++) {
+			mm = masks[i].bmp;
+			ma = masks[i].mask;
+			ma.x = (circleCenter[0] * sc) + newx;
+			ma.y = (circleCenter[1] * sc) + newy;
+			mm.x = ma.x;
+			mm.y = ma.y;
+			mm.scaleX = mm.scaleY = sc;
+			ma.scaleX = ma.scaleY = sc;
+			console.log(mm.image.width + " => " + cr + "," + mm.x + ":" + mm.y);
+		}
+	}
+
+	function createMasks() {
+		var i, l = circleData.length;
+		for (i=0;i<l;i++) {
+			// masks can only be shapes.
+			var m = new createjs.Shape();
+			// the mask's position will be relative to the parent of its target:
+			m.x = circleCenter[0];
+			m.y = circleCenter[1];
+			
+			var mShape = m.graphics.beginFill();
+			if (debug) {
+				mShape = mShape.beginStroke("#FF0").setStrokeStyle(5);
+			}
+			mShape.drawCircle(0,0,circleData[i].radius).endStroke();
+			var mBmp = new createjs.Bitmap(img);
+			mBmp.regX = circleCenter[0];
+			mBmp.regY = circleCenter[1];
+			mBmp.x = circleCenter[0];
+			mBmp.y = circleCenter[1];
+			mBmp.mask = m;
+
+			masks.push({bmp:mBmp,mask:m});
+
+			stage.addChild(mBmp);
+			stage.addChild(m);
+			// console.log(mBmp);
+		}
+	}
+
+	function randomizePuzzle() {
+		var i, l = circleData.length;
+		for (i=0;i<l;i++) {
+			mm = masks[i].bmp;
+			mm.rotation = Math.random() * 360;
+		}
 	}
 
 	function tick() {
