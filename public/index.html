@@ -72,7 +72,7 @@
 		if (Modernizr.touch){
 			// bind to touchstart, touchmove, etc and watch `event.streamId`
 			stage.onPress = function(mouseEvent) {
-				console.log("pressed");
+				// console.log("pressed");
 				mouseEvent.onMouseMove = onMove;
 			}
 		} else {
@@ -83,13 +83,14 @@
 	}
 
 	function onMove(mouseEvent) {
+		if (!imageLoaded) return;
 		var axis = "";
 		if (Modernizr.touch){
 			axis = "stage";
 		} else {
 			axis = "page";
 		}
-		console.log(mouseEvent);
+		// console.log(mouseEvent);
 	    if(!mouseEvent){ mouseEvent = window.event; }
 		var i, l = circleData.length;
 		for (i=0;i<l;i++) {
@@ -142,7 +143,7 @@
 		backgroundImage.x = newx;
 		backgroundImage.y = newy;
 		backgroundImage.scaleX = backgroundImage.scaleY = sc;
-		console.log(backgroundImage.image.width + " -> " + cr + "," + newx + ":" + newy);
+		// console.log(backgroundImage.image.width + " -> " + cr + "," + newx + ":" + newy);
 		// resize masks
 		var i, l = circleData.length;
 		var mm, ma;
@@ -155,7 +156,6 @@
 			mm.y = ma.y;
 			mm.scaleX = mm.scaleY = sc;
 			ma.scaleX = ma.scaleY = sc;
-			console.log(mm.image.width + " => " + cr + "," + mm.x + ":" + mm.y);
 		}
 	}
 
