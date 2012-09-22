@@ -29,6 +29,7 @@
 		};
 	</script>
 	<script type="application/javascript" src="/js/add2home.js" charset="utf-8"></script>
+	<script type="application/javascript" src="/js/modernizr.js" charset="utf-8"></script>
 </head>
 <body>
 <div id="wrapper">
@@ -42,7 +43,7 @@
 	var imageLoaded = false, update = true;
 
 	var circleCenter = [835,666];
-	var circleData = [{radius:300,axis:'stageX',power:2}, {radius:150,axis:'stageY',power:3}, {radius:100,axis:'stageX',power:4}];
+	var circleData = [{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}];
 
 	var debug = false;
 
@@ -55,31 +56,48 @@
 
 		createjs.Touch.enable(stage);
 
-		addListeners();
-
 		resizeCanvas();
 
 		//wait for the image to load
 		img = new Image();
 		img.onload = handleImageLoad;
 		img.src = "/images/test.jpg";
+
+		addListeners();
+
 	}
 
 	function addListeners() {
 		window.addEventListener('resize', resizeCanvas, false);
-		stage.onPress = function(mouseEvent) {
-			// console.log("pressed");
-			mouseEvent.onMouseMove = function(mouseEvent) {
-				var i, l = circleData.length;
-				for (i=0;i<l;i++) {
-					mm = masks[i].bmp;
-					mm.rotation = mouseEvent[circleData[i].axis] * (circleData[i].power);
-					console.log(" => " + mm.x + ":" + mm.y);
-				}
-				update = true;
-				// console.log("mouse moved: "+mouseEvent.stageX+","+mouseEvent.stageY);
+		if (Modernizr.touch){
+			// bind to touchstart, touchmove, etc and watch `event.streamId`
+			stage.onPress = function(mouseEvent) {
+				console.log("pressed");
+				mouseEvent.onMouseMove = onMove;
 			}
+		} else {
+			// bind to normal click, mousemove, etc
+			stage.mouseEnabled = true;
+			canvas.onmousemove  = onMove;
 		}
+	}
+
+	function onMove(mouseEvent) {
+		var axis = "";
+		if (Modernizr.touch){
+			axis = "stage";
+		} else {
+			axis = "page";
+		}
+		console.log(mouseEvent);
+	    if(!mouseEvent){ mouseEvent = window.event; }
+		var i, l = circleData.length;
+		for (i=0;i<l;i++) {
+			mm = masks[i].bmp;
+			mm.rotation = mouseEvent[axis + circleData[i].axis] * (circleData[i].power);
+			// console.log(" => " + mm.x + ":" + mm.y);
+		}
+		update = true;
 	}
 
 	function handleImageLoad() {
