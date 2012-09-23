@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>	
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+	<title>MobileSafari image dimensions test</title>
+
+	<script type="text/javascript">
+	var img;
+
+	function init() {
+		img = new Image();
+		img.onload = handleImageLoad;
+		img.src = "/images/size.jpg";
+		document.getElementById("browser").innerHTML = navigator.userAgent;
+	}
+
+	function handleImageLoad() {
+		console.log(" imw:" + img.width + " imgh:" + img.height);
+		document.getElementById("dimensions").innerHTML = img.width + "x" + img.height;
+		document.getElementById("test").src = img.src;
+	}
+
+	</script>
+
+</head>
+<body onload="init()">
+	<p>your browser: <strong><span id="browser"></span></strong></p>
+	<p>image dimensions: <strong><span id="dimensions"></span></strong></p>
+	<img id="test" />
+</body>
+</html>
