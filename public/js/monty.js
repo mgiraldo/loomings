@@ -4,8 +4,13 @@
 
 	var imageLoaded = false, update = true;
 
-	var circleCenter = [835,666];
-	var circleData = [{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}];
+	var imageData = ["test0.jpg","test1.jpg"];
+	var circleCenter = [[835,666],[892,901]];
+	var circleData = [];
+	circleData.push([{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}]);
+	circleData.push([{radius:400,axis:'Y',power:3}, {radius:270,axis:'Y',power:1}, {radius:200,axis:'X',power:2}, {radius:120,axis:'Y',power:3.3}]);
+
+	var currentImage = 1;
 
 	var debug = false;
 
@@ -23,7 +28,7 @@
 		//wait for the image to load
 		img = new Image();
 		img.onload = handleImageLoad;
-		img.src = "/images/test.jpg";
+		img.src = "/images/" + imageData[currentImage];
 
 		addListeners();
 
@@ -54,10 +59,10 @@
 		}
 		// console.log(mouseEvent);
 	    if(!mouseEvent){ mouseEvent = window.event; }
-		var i, l = circleData.length;
+		var i, l = circleData[currentImage].length;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
-			mm.rotation = mouseEvent[axis + circleData[i].axis] * (circleData[i].power);
+			mm.rotation = mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
 			// console.log(" => " + mm.x + ":" + mm.y);
 		}
 		update = true;
@@ -107,13 +112,13 @@
 		backgroundImage.scaleX = backgroundImage.scaleY = sc;
 		// console.log(backgroundImage.image.width + " -> " + cr + "," + newx + ":" + newy);
 		// resize masks
-		var i, l = circleData.length;
+		var i, l = circleData[currentImage].length;
 		var mm, ma;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			ma = masks[i].mask;
-			ma.x = (circleCenter[0] * sc) + newx;
-			ma.y = (circleCenter[1] * sc) + newy;
+			ma.x = (circleCenter[currentImage][0] * sc) + newx;
+			ma.y = (circleCenter[currentImage][1] * sc) + newy;
 			mm.x = ma.x;
 			mm.y = ma.y;
 			mm.scaleX = mm.scaleY = sc;
@@ -122,24 +127,24 @@
 	}
 
 	function createMasks() {
-		var i, l = circleData.length;
+		var i, l = circleData[currentImage].length;
 		for (i=0;i<l;i++) {
 			// masks can only be shapes.
 			var m = new createjs.Shape();
 			// the mask's position will be relative to the parent of its target:
-			m.x = circleCenter[0];
-			m.y = circleCenter[1];
+			m.x = circleCenter[currentImage][0];
+			m.y = circleCenter[currentImage][1];
 			
 			var mShape = m.graphics.beginFill();
 			if (debug) {
 				mShape = mShape.beginStroke("#FF0").setStrokeStyle(5);
 			}
-			mShape.drawCircle(0,0,circleData[i].radius).endStroke();
+			mShape.drawCircle(0,0,circleData[currentImage][i].radius).endStroke();
 			var mBmp = new createjs.Bitmap(img);
-			mBmp.regX = circleCenter[0];
-			mBmp.regY = circleCenter[1];
-			mBmp.x = circleCenter[0];
-			mBmp.y = circleCenter[1];
+			mBmp.regX = circleCenter[currentImage][0];
+			mBmp.regY = circleCenter[currentImage][1];
+			mBmp.x = circleCenter[currentImage][0];
+			mBmp.y = circleCenter[currentImage][1];
 			mBmp.mask = m;
 
 			masks.push({bmp:mBmp,mask:m});
@@ -151,7 +156,7 @@
 	}
 
 	function randomizePuzzle() {
-		var i, l = circleData.length;
+		var i, l = circleData[currentImage].length;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			mm.rotation = Math.random() * 360;
