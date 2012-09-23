@@ -73,6 +73,7 @@
 		}
 		if (correct == l) {
 			// all correct! next puzzle
+			stage.removeAllChildren();
 			imageLoaded = false, masks = [], img = {}, backgroundImage = {};
 			currentImage = currentImage == 1 ? 0 : 1;
 			loadCurrentImage();
@@ -128,10 +129,10 @@
 		var mm, ma, mx, my;
 		mx = (circleCenter[currentImage][0] * sc) + newx;
 		my = (circleCenter[currentImage][1] * sc) + newy;
-		console.log(" newx:" + newx + " newy:" + newy);
-		console.log(" -> centerx:" + circleCenter[currentImage][0] + " centery:" + circleCenter[currentImage][1] + " scale:" + sc);
-		console.log(" -> cw:" + cw + " ch:" + ch + " -> cr:" + cr + " imw:" + img.width + " imgh:" + img.height + " ir:" + imageRatio);
-		console.log(" -> mx:" + mx + " my:" + my);
+		// console.log(" newx:" + newx + " newy:" + newy);
+		// console.log(" -> centerx:" + circleCenter[currentImage][0] + " centery:" + circleCenter[currentImage][1] + " scale:" + sc);
+		// console.log(" -> cw:" + cw + " ch:" + ch + " -> cr:" + cr + " imw:" + img.width + " imgh:" + img.height + " ir:" + imageRatio);
+		// console.log(" -> mx:" + mx + " my:" + my);
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			ma = masks[i].mask;
