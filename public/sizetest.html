@@ -8,19 +8,26 @@
 	<title>MobileSafari image dimensions test</title>
 
 	<script type="text/javascript">
-	var img;
+	var imgBig, imgSmall;
 
 	function init() {
-		img = new Image();
-		img.onload = handleImageLoad;
-		img.src = "/images/size.jpg";
+		imgBig = new Image();
+		imgBig.onload = handleBig;
+		imgBig.src = "/images/size.jpg";
+		imgSmall = new Image();
+		imgSmall.onload = handleSmall;
+		imgSmall.src = "/images/test1.jpg";
 		document.getElementById("browser").innerHTML = navigator.userAgent;
 	}
 
-	function handleImageLoad() {
-		console.log(" imw:" + img.width + " imgh:" + img.height);
-		document.getElementById("dimensions").innerHTML = img.width + "x" + img.height;
-		document.getElementById("test").src = img.src;
+	function handleBig() {
+		document.getElementById("dimensionsBig").innerHTML = imgBig.width + "x" + imgBig.height;
+		document.getElementById("testBig").src = imgBig.src;
+	}
+
+	function handleSmall() {
+		document.getElementById("dimensionsSmall").innerHTML = imgSmall.width + "x" + imgSmall.height;
+		document.getElementById("testSmall").src = imgSmall.src;
 	}
 
 	</script>
@@ -28,7 +35,9 @@
 </head>
 <body onload="init()">
 	<p>your browser: <strong><span id="browser"></span></strong></p>
-	<p>image dimensions: <strong><span id="dimensions"></span></strong></p>
-	<img id="test" />
+	<p>big image dimensions: <strong><span id="dimensionsSmall"></span></strong> (should be 1700x1134)</p>
+	<img id="testSmall" />
+	<p>small image dimensions: <strong><span id="dimensionsBig"></span></strong> (should be 2000x1334)</p>
+	<img id="testBig" />
 </body>
 </html>
