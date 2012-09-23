@@ -5,10 +5,10 @@
 	var imageLoaded = false, update = true;
 
 	var imageData = ["test0.jpg","test1.jpg"];
-	var circleCenter = [[835,666],[892,901]];
+	var circleCenter = [[835,666],[795,813]];
 	var circleData = [];
 	circleData.push([{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}]);
-	circleData.push([{radius:400,axis:'Y',power:3}, {radius:270,axis:'Y',power:1}, {radius:200,axis:'X',power:2}, {radius:120,axis:'Y',power:3.3}]);
+	circleData.push([{radius:310,axis:'Y',power:3}, {radius:270,axis:'Y',power:1}, {radius:200,axis:'X',power:2}, {radius:120,axis:'Y',power:5}]);
 
 	var currentImage = 1;
 
@@ -69,6 +69,7 @@
 	}
 
 	function handleImageLoad() {
+		console.log(" imw:" + img.width + " imgh:" + img.height);
 		imageLoaded = true;
 		// check ratio of image
 		imageRatio = img.width / img.height;
@@ -100,7 +101,6 @@
 		if (cr < imageRatio) {
 			// scale based on width
 			sc = cw / img.width;
-			backgroundImage.x = 0;
 			newy = (ch - (img.height*sc))/2;
 		} else {
 			// scale based on height
@@ -110,19 +110,21 @@
 		backgroundImage.x = newx;
 		backgroundImage.y = newy;
 		backgroundImage.scaleX = backgroundImage.scaleY = sc;
-		// console.log(backgroundImage.image.width + " -> " + cr + "," + newx + ":" + newy);
 		// resize masks
 		var i, l = circleData[currentImage].length;
-		var mm, ma;
+		var mm, ma, mx, my;
+		mx = (circleCenter[currentImage][0] * sc) + newx;
+		my = (circleCenter[currentImage][1] * sc) + newy;
+		console.log(" newx:" + newx + " newy:" + newy);
+		console.log(" -> centerx:" + circleCenter[currentImage][0] + " centery:" + circleCenter[currentImage][1] + " scale:" + sc);
+		console.log(" -> cw:" + cw + " ch:" + ch + " -> cr:" + cr + " imw:" + img.width + " imgh:" + img.height + " ir:" + imageRatio);
+		console.log(" -> mx:" + mx + " my:" + my);
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			ma = masks[i].mask;
-			ma.x = (circleCenter[currentImage][0] * sc) + newx;
-			ma.y = (circleCenter[currentImage][1] * sc) + newy;
-			mm.x = ma.x;
-			mm.y = ma.y;
-			mm.scaleX = mm.scaleY = sc;
-			ma.scaleX = ma.scaleY = sc;
+			mm.x = ma.x = mx;
+			mm.y = ma.y = my;
+			mm.scaleX = mm.scaleY = ma.scaleX = ma.scaleY = sc;
 		}
 	}
 
