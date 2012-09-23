@@ -1,6 +1,6 @@
 // (function () {
 
-	var canvas, stage, shape, masks = [], img, backgroundImage, imageRatio = 1;
+	var canvas, stage, masks = [], img, backgroundImage, imageRatio = 1;
 
 	var imageLoaded = false, update = true;
 
@@ -10,7 +10,7 @@
 	circleData.push([{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}]);
 	circleData.push([{radius:310,axis:'Y',power:3}, {radius:270,axis:'Y',power:1}, {radius:200,axis:'X',power:2}, {radius:120,axis:'Y',power:5}]);
 
-	var currentImage = 1;
+	var currentImage = 0;
 
 	var debug = false;
 
@@ -25,13 +25,17 @@
 
 		resizeCanvas();
 
+		loadCurrentImage();
+
+		addListeners();
+
+	}
+
+	function loadCurrentImage() {
 		//wait for the image to load
 		img = new Image();
 		img.onload = handleImageLoad;
 		img.src = "/images/" + imageData[currentImage];
-
-		addListeners();
-
 	}
 
 	function addListeners() {
@@ -60,10 +64,19 @@
 		// console.log(mouseEvent);
 	    if(!mouseEvent){ mouseEvent = window.event; }
 		var i, l = circleData[currentImage].length;
+		var correct = 0;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			mm.rotation = mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
-			// console.log(" => " + mm.x + ":" + mm.y);
+			// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
+			if ((mm.rotation%360) == 0) correct++;
+		}
+		if (correct == l) {
+			// all correct! next puzzle
+			imageLoaded = false, masks = [], img = {}, backgroundImage = {};
+			currentImage = currentImage == 1 ? 0 : 1;
+			loadCurrentImage();
+			resizeCanvas();
 		}
 		update = true;
 	}
