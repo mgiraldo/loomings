@@ -22,12 +22,12 @@
 
 	function handleBig() {
 		document.getElementById("dimensionsBig").innerHTML = imgBig.width + "x" + imgBig.height;
-		document.getElementById("testBig").src = imgBig.src;
+		document.getElementById("testBig").href = imgBig.src;
 	}
 
 	function handleSmall() {
 		document.getElementById("dimensionsSmall").innerHTML = imgSmall.width + "x" + imgSmall.height;
-		document.getElementById("testSmall").src = imgSmall.src;
+		document.getElementById("testSmall").href = imgSmall.src;
 	}
 
 	</script>
@@ -36,9 +36,9 @@
 <body onload="init()">
 	<p>your browser: <strong><span id="browser"></span></strong></p>
 	<p>big image dimensions: <strong><span id="dimensionsBig"></span></strong> (should be 2000x1334)</p>
-	<img id="testBig" />
+	<a id="testBig" >view big image</a>
 	<p>small image dimensions: <strong><span id="dimensionsSmall"></span></strong> (should be 1700x1134)</p>
-	<img id="testSmall" />
+	<a id="testSmall" >view small image</a>
 	<p><a href="http://www.flickr.com/photos/benditafoto/6408384479/">Image from @benditafoto on Flickr</a></p>
 </body>
 </html>
