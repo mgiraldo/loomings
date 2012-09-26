@@ -5,14 +5,16 @@
 	var imageLoaded = false, update = true;
 
 	var imageData = ["test0.jpg","test1.jpg"];
-	var circleCenter = [[835,666],[795,813]];
+	var circleCenter = [[835,666,200,200],[795,813,900,800]];
 	var circleData = [];
-	circleData.push([{radius:300,axis:'X',power:2}, {radius:150,axis:'Y',power:3}, {radius:100,axis:'X',power:4}]);
-	circleData.push([{radius:310,axis:'Y',power:3}, {radius:270,axis:'Y',power:1}, {radius:200,axis:'X',power:2}, {radius:120,axis:'Y',power:5}]);
+	circleData.push([{radius:300,axis:'X',power:-2.5}, {radius:150,axis:'Y',power:-3.4}, {radius:100,axis:'X',power:4.1}]);
+	circleData.push([{radius:310,axis:'Y',power:1.3}, {radius:270,axis:'Y',power:-1.1}, {radius:200,axis:'X',power:-2.5}, {radius:120,axis:'Y',power:5}]);
 
 	var currentImage = 0;
 
 	var debug = false;
+
+	var restartId, winDelay = 1000;
 
 	
 	function init() {
@@ -28,7 +30,6 @@
 		loadCurrentImage();
 
 		addListeners();
-
 	}
 
 	function loadCurrentImage() {
@@ -40,6 +41,10 @@
 
 	function addListeners() {
 		window.addEventListener('resize', resizeCanvas, false);
+		addInteractiveListeners();
+	}
+
+	function addInteractiveListeners() {
 		if (Modernizr.touch){
 			// bind to touchstart, touchmove, etc and watch `event.streamId`
 			stage.onPress = function(mouseEvent) {
@@ -50,6 +55,16 @@
 			// bind to normal click, mousemove, etc
 			stage.mouseEnabled = true;
 			canvas.onmousemove  = onMove;
+		}
+	}
+
+	function removeInteractiveListeners() {
+		if (Modernizr.touch){
+			// bind to touchstart, touchmove, etc and watch `event.streamId`
+			stage.onPress = {};
+		} else {
+			// bind to normal click, mousemove, etc
+			canvas.onmousemove  = {};
 		}
 	}
 
@@ -65,21 +80,33 @@
 	    if(!mouseEvent){ mouseEvent = window.event; }
 		var i, l = circleData[currentImage].length;
 		var correct = 0;
+		var dx, dy, px, py, dd;
+		px = circleCenter[currentImage][2], py = circleCenter[currentImage][3];
+		dx = mouseEvent[axis + "X"] - px, dy = mouseEvent[axis + "Y"] - py;
+		dd = (dx * dx) + (dy * dy);
+		console.log(px, py, dx, dy, dd);
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
-			mm.rotation = mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
+			mm.rotation = (dx + dy) * circleData[currentImage][i].power; // mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
 			// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
 			if ((mm.rotation%360) == 0) correct++;
 		}
 		if (correct == l) {
-			// all correct! next puzzle
-			stage.removeAllChildren();
-			imageLoaded = false, masks = [], img = {}, backgroundImage = {};
-			currentImage = currentImage == 1 ? 0 : 1;
-			loadCurrentImage();
-			resizeCanvas();
+			removeInteractiveListeners();
+			restartId = setInterval(winner, winDelay);
 		}
 		update = true;
+	}
+
+	function winner() {
+		clearInterval(restartId);
+		// all correct! next puzzle
+		stage.removeAllChildren();
+		imageLoaded = false, masks = [], img = {}, backgroundImage = {};
+		currentImage = currentImage == 1 ? 0 : 1;
+		loadCurrentImage();
+		resizeCanvas();
+		addInteractiveListeners();
 	}
 
 	function handleImageLoad() {
