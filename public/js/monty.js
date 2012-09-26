@@ -7,8 +7,8 @@
 	var imageData = ["test0.jpg","test1.jpg"];
 	var circleCenter = [[835,666,200,200],[795,813,900,800]];
 	var circleData = [];
-	circleData.push([{radius:300,axis:'X',power:-2.5}, {radius:150,axis:'Y',power:-3.4}, {radius:100,axis:'X',power:4.1}]);
-	circleData.push([{radius:310,axis:'Y',power:1.3}, {radius:270,axis:'Y',power:-1.1}, {radius:200,axis:'X',power:-2.5}, {radius:120,axis:'Y',power:5}]);
+	circleData.push([{radius:300,axis:'X',power:-2.5}, {radius:150,axis:'Y',power:-3.2}, {radius:100,axis:'X',power:4.5}]);
+	circleData.push([{radius:310,axis:'Y',power:3.3}, {radius:270,axis:'Y',power:-2.5}, {radius:200,axis:'X',power:-2.1}, {radius:120,axis:'Y',power:5}]);
 
 	var currentImage = 0;
 
@@ -76,26 +76,49 @@
 		} else {
 			axis = "page";
 		}
+		// scale
+		var sc, cw, ch, cr;
+		cw = canvas.width;
+		ch = canvas.height;
+		cr = cw / ch;
+		if (cr < imageRatio) {
+			// scale based on width
+			sc = cw / img.width;
+		} else {
+			// scale based on height
+			sc = ch / img.height;
+		}
 		// console.log(mouseEvent);
 	    if(!mouseEvent){ mouseEvent = window.event; }
 		var i, l = circleData[currentImage].length;
 		var correct = 0;
 		var dx, dy, px, py, dd;
-		px = circleCenter[currentImage][2], py = circleCenter[currentImage][3];
+		px = circleCenter[currentImage][2] * sc, py = circleCenter[currentImage][3] * sc;
 		dx = mouseEvent[axis + "X"] - px, dy = mouseEvent[axis + "Y"] - py;
 		dd = (dx * dx) + (dy * dy);
-		console.log(px, py, dx, dy, dd);
+		// console.log(px, py, dx, dy, dd);
+		var str = "";
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			mm.rotation = (dx + dy) * circleData[currentImage][i].power; // mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
 			// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
-			if ((mm.rotation%360) == 0) correct++;
+			if (Math.abs(mm.rotation%360) <= 2.5) correct++;
+			str += Math.abs(mm.rotation%360) + " ";
 		}
+		console.log(str);
 		if (correct == l) {
 			removeInteractiveListeners();
+			removeCircles();
 			restartId = setInterval(winner, winDelay);
 		}
 		update = true;
+	}
+
+	function removeCircles() {
+		var i, l = circleData[currentImage].length;
+		for (i=0;i<l;i++) {
+			stage.removeChild(masks[i].bmp, masks[i].mask);
+		}
 	}
 
 	function winner() {
