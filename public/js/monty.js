@@ -10,12 +10,12 @@
 					"florida.jpg",
 					"florida2.jpg"
 					];
-	var circleCenter = [[943.85,336.45,1000,100],[813.1,515.5,880,900][707.8,803.95,400,900],[670.65,838.65,1500,870]];
+	var circleCenter = [[813.1,515.5,880,900],[943.85,336.45,1000,100],[707.8,803.95,400,900],[670.65,838.65,1500,870]];
 	var circleData = [];
-	circleData.push([{radius:462,axis:'X',power:-2}]);
-	circleData.push([{radius:222,axis:'X',power:-2.5}, {radius:137.2,axis:'Y',power:-3.2}]);
-	circleData.push([{radius:421,axis:'Y',power:2}, {radius:180,axis:'X',power:3.2}]);
-	circleData.push([{radius:399,axis:'X',power:-2.5}, {radius:350,axis:'Y',power:-3.2}, {radius:285,axis:'X',power:4.4}]);
+	circleData.push([{radius:231,axis:'X',power:-2}]);
+	circleData.push([{radius:222,axis:'X',power:-2.5}, {radius:137.2,axis:'Y',power:3.2}]);
+	circleData.push([{radius:210,axis:'Y',power:2.8}, {radius:90,axis:'X',power:-6.1}]);
+	circleData.push([{radius:200,axis:'X',power:-2.5}, {radius:175,axis:'Y',power:-3.2}, {radius:142,axis:'X',power:4.4}]);
 
 	var currentImage = 0;
 
@@ -133,7 +133,10 @@
 		// all correct! next puzzle
 		stage.removeAllChildren();
 		imageLoaded = false, masks = [], img = {}, backgroundImage = {};
-		currentImage = currentImage == 1 ? 0 : 1;
+		currentImage++;
+		if (currentImage >= imageData.length) {
+			currentImage = 0;
+		}
 		loadCurrentImage();
 		resizeCanvas();
 		addInteractiveListeners();
