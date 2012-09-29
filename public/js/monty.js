@@ -4,11 +4,18 @@
 
 	var imageLoaded = false, update = true;
 
-	var imageData = ["test0.jpg","test1.jpg"];
-	var circleCenter = [[835,666,200,200],[795,813,900,800]];
+	var imageData = [
+					"mayo.jpg",
+					"corrientes.jpg",
+					"florida.jpg",
+					"florida2.jpg"
+					];
+	var circleCenter = [[943.85,336.45,1000,100],[813.1,515.5,880,900][707.8,803.95,400,900],[670.65,838.65,1500,870]];
 	var circleData = [];
-	circleData.push([{radius:300,axis:'X',power:-2.5}, {radius:150,axis:'Y',power:-3.2}, {radius:100,axis:'X',power:4.5}]);
-	circleData.push([{radius:310,axis:'Y',power:3.3}, {radius:270,axis:'Y',power:-2.5}, {radius:200,axis:'X',power:-2.1}, {radius:120,axis:'Y',power:5}]);
+	circleData.push([{radius:462,axis:'X',power:-2}]);
+	circleData.push([{radius:222,axis:'X',power:-2.5}, {radius:137.2,axis:'Y',power:-3.2}]);
+	circleData.push([{radius:421,axis:'Y',power:2}, {radius:180,axis:'X',power:3.2}]);
+	circleData.push([{radius:399,axis:'X',power:-2.5}, {radius:350,axis:'Y',power:-3.2}, {radius:285,axis:'X',power:4.4}]);
 
 	var currentImage = 0;
 
