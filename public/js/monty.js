@@ -137,7 +137,7 @@
 			if (moduloRot <= rotTolerance || moduloRot >= 360 - rotTolerance) correct++;
 			str += Math.abs(mm.rotation%360) + " ";
 		}
-		console.log(str);
+		// console.log(str);
 		if (correct == l) {
 			removeInteractiveListeners();
 			removeCircles();
@@ -168,7 +168,7 @@
 	}
 
 	function handleImageLoad() {
-		console.log(" imw:" + img.width + " imgh:" + img.height);
+		// console.log(" imw:" + img.width + " imgh:" + img.height);
 		imageLoaded = true;
 		// check ratio of image
 		imageRatio = img.width / img.height;
