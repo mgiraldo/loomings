@@ -2,7 +2,7 @@
 
 	var canvas, stage, masks = [], img, backgroundImage, imageRatio = 1;
 
-	var imageLoaded = false, update = true;
+	var imageLoaded = false, update = true, hasWon = false;
 
 	var rotTolerance = 2.5;
 
@@ -71,13 +71,13 @@
 
 	function addInteractiveListeners() {
 		if (Modernizr.touch){
-			// bind to touchstart, touchmove, etc and watch `event.streamId`
+			// bind to touchstart
 			stage.onPress = function(mouseEvent) {
 				// console.log("pressed");
 				mouseEvent.onMouseMove = onMove;
 			}
 		} else {
-			// bind to normal click, mousemove, etc
+			// bind to mousemove
 			stage.mouseEnabled = true;
 			canvas.onmousemove  = onMove;
 		}
@@ -85,16 +85,16 @@
 
 	function removeInteractiveListeners() {
 		if (Modernizr.touch){
-			// bind to touchstart, touchmove, etc and watch `event.streamId`
+			// remove touch
 			stage.onPress = {};
 		} else {
-			// bind to normal click, mousemove, etc
+			// remove mousemove
 			canvas.onmousemove  = {};
 		}
 	}
 
 	function onMove(mouseEvent) {
-		if (!imageLoaded) return;
+		if (!imageLoaded || hasWon) return;
 		var axis = "";
 		if (Modernizr.touch){
 			axis = "stage";
@@ -139,6 +139,7 @@
 		}
 		// console.log(str);
 		if (correct == l) {
+			hasWon = true;
 			removeInteractiveListeners();
 			removeCircles();
 			restartId = setInterval(winner, winDelay);
@@ -170,6 +171,7 @@
 	function handleImageLoad() {
 		// console.log(" imw:" + img.width + " imgh:" + img.height);
 		imageLoaded = true;
+		hasWon = false;
 		// check ratio of image
 		imageRatio = img.width / img.height;
 		backgroundImage = new createjs.Bitmap(img);
