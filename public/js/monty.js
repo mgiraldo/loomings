@@ -29,7 +29,7 @@
 	circleData.push([{radius:231,axis:'X',power:-2}]);
 	circleData.push([{radius:222,axis:'X',power:-3}, {radius:137.2,axis:'Y',power:3.3}]);
 	circleData.push([{radius:210,axis:'Y',power:3}, {radius:90,axis:'X',power:-5.1}]);
-	circleData.push([{radius:200,axis:'X',power:-2}, {radius:175,axis:'Y',power:-4}, {radius:142,axis:'X',power:3}]);
+	circleData.push([{radius:200,axis:'X',power:-2}, {radius:175,axis:'Y',power:-4}, {radius:142,axis:'X',power:2}]);
 	circleData.push([{radius:236.5,axis:'X',power:-2}, {radius:90,axis:'Y',power:3.4}]);
 	circleData.push([{radius:319,axis:'Y',power:3}, {radius:61.5,axis:'X',power:-2.8}]);
 	circleData.push([{radius:458,axis:'X',power:-2}, {radius:212,axis:'Y',power:-5.3}]);
