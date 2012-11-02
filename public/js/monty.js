@@ -6,34 +6,16 @@
 
 	var rotTolerance = 2.5;
 
-	var imageData = [
-					"mayo.jpg",
-					"corrientes.jpg",
-					"florida.jpg",
-					"florida2.jpg",
-					"belgrano1.jpg",
-					"belgrano2.jpg",
-					"chino1.jpg",
-					"chino3.jpg"
-					];
-	var circleCenter = [];
-	circleCenter.push([813.1,515.5,880,900]);
-	circleCenter.push([943.85,336.45,1000,100]);
-	circleCenter.push([707.8,803.95,400,900]);
-	circleCenter.push([670.65,838.65,1500,870]);
-	circleCenter.push([873,803,900,600]);
-	circleCenter.push([757,718,300,700]);
-	circleCenter.push([864,574,1400,170]);
-	circleCenter.push([392,660,1000,440]);
 	var circleData = [];
-	circleData.push([{radius:231,axis:'X',power:-2}]);
-	circleData.push([{radius:222,axis:'X',power:-3}, {radius:137.2,axis:'Y',power:3.3}]);
-	circleData.push([{radius:210,axis:'Y',power:3}, {radius:90,axis:'X',power:-5.1}]);
-	circleData.push([{radius:200,axis:'X',power:-2}, {radius:175,axis:'Y',power:-4}, {radius:142,axis:'X',power:2}]);
-	circleData.push([{radius:236.5,axis:'X',power:-2}, {radius:90,axis:'Y',power:3.4}]);
-	circleData.push([{radius:319,axis:'Y',power:3}, {radius:61.5,axis:'X',power:-2.8}]);
-	circleData.push([{radius:458,axis:'X',power:-2}, {radius:212,axis:'Y',power:-5.3}]);
-	circleData.push([{radius:192.5,axis:'Y',power:-4}, {radius:127,axis:'X',power:5.2}]);
+	circleData.push({photo:"mayo.jpg",center:[813.1,515.5],point:[880,900],circles:[{radius:231,axis:'X',power:-2}]});
+	circleData.push({photo:"corrientes.jpg",center:[943.85,336.45],point:[1000,100],circles:[{radius:222,axis:'X',power:-3}, {radius:137.2,axis:'Y',power:3.3}]});
+	circleData.push({photo:"florida.jpg",center:[707.8,803.95],point:[400,900],circles:[{radius:210,axis:'Y',power:3}, {radius:90,axis:'X',power:-5.1}]});
+	circleData.push({photo:"florida2.jpg",center:[670.65,838.65],point:[1500,870],circles:[{radius:175,axis:'X',power:-2}, {radius:142.5,axis:'Y',power:-4}]});
+	circleData.push({photo:"belgrano1.jpg",center:[873,803],point:[900,600],circles:[{radius:236.5,axis:'X',power:-2}, {radius:90,axis:'Y',power:3.4}]});
+	circleData.push({photo:"belgrano2.jpg",center:[757,718],point:[300,700],circles:[{radius:319,axis:'Y',power:3}, {radius:61.5,axis:'X',power:-2.8}]});
+	circleData.push({photo:"chino1.jpg",center:[864,574],point:[1400,170],circles:[{radius:458,axis:'X',power:-2}, {radius:212,axis:'Y',power:-5.3}]});
+	circleData.push({photo:"chino3.jpg",center:[392,660],point:[1000,440],circles:[{radius:192.5,axis:'Y',power:-4}, {radius:127,axis:'X',power:5.2}]});
+	circleData.push({photo:"prueba33.jpg",center:[888.3,622.7],point:[100,640],circles:[{radius:408.5,axis:'Y',power:-1}, {radius:295,axis:'X',power:3}, {radius:168.5,axis:'X',power:-4}]});
 
 	var currentImage = 0;
 
@@ -61,7 +43,7 @@
 		//wait for the image to load
 		img = new Image();
 		img.onload = handleImageLoad;
-		img.src = "/images/" + imageData[currentImage];
+		img.src = "/images/" + circleData[currentImage].photo;
 	}
 
 	function addListeners() {
@@ -115,23 +97,23 @@
 		}
 		// console.log(mouseEvent);
 	    if(!mouseEvent){ mouseEvent = window.event; }
-		var i, l = circleData[currentImage].length;
+		var i, l = circleData[currentImage].circles.length;
 		var correct = 0;
 		var d, dx, dy, px, py, dd;
-		px = circleCenter[currentImage][2] * sc, py = circleCenter[currentImage][3] * sc;
+		px = circleData[currentImage].point[0] * sc, py = circleData[currentImage].point[1] * sc;
 		dx = mouseEvent[axis + "X"] - px, dy = mouseEvent[axis + "Y"] - py;
 		dd = (dx * dx) + (dy * dy);
 		// console.log(px, py, dx, dy, dd);
 		var str = "";
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
-			d = mouseEvent[axis + "" + circleData[currentImage][i].axis];
-			if (circleData[currentImage][i].axis == "X") {
+			d = mouseEvent[axis + "" + circleData[currentImage].circles[i].axis];
+			if (circleData[currentImage].circles[i].axis == "X") {
 				d -= px;
 			} else {
 				d -= py;
 			}
-			mm.rotation = d * circleData[currentImage][i].power; // mouseEvent[axis + circleData[currentImage][i].axis] * (circleData[currentImage][i].power);
+			mm.rotation = d * circleData[currentImage].circles[i].power; // mouseEvent[axis + circleData[currentImage].circles[i].axis] * (circleData[currentImage].circles[i].power);
 			// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
 			var moduloRot = Math.abs(mm.rotation%360);
 			if (moduloRot <= rotTolerance || moduloRot >= 360 - rotTolerance) correct++;
@@ -148,7 +130,7 @@
 	}
 
 	function removeCircles() {
-		var i, l = circleData[currentImage].length;
+		var i, l = circleData[currentImage].circles.length;
 		for (i=0;i<l;i++) {
 			stage.removeChild(masks[i].bmp, masks[i].mask);
 		}
@@ -160,7 +142,7 @@
 		stage.removeAllChildren();
 		imageLoaded = false, masks = [], img = {}, backgroundImage = {};
 		currentImage++;
-		if (currentImage >= imageData.length) {
+		if (currentImage >= circleData.length) {
 			currentImage = 0;
 		}
 		loadCurrentImage();
@@ -212,12 +194,12 @@
 		backgroundImage.y = newy;
 		backgroundImage.scaleX = backgroundImage.scaleY = sc;
 		// resize masks
-		var i, l = circleData[currentImage].length;
+		var i, l = circleData[currentImage].circles.length;
 		var mm, ma, mx, my;
-		mx = (circleCenter[currentImage][0] * sc) + newx;
-		my = (circleCenter[currentImage][1] * sc) + newy;
+		mx = (circleData[currentImage].center[0] * sc) + newx;
+		my = (circleData[currentImage].center[1] * sc) + newy;
 		// console.log(" newx:" + newx + " newy:" + newy);
-		// console.log(" -> centerx:" + circleCenter[currentImage][0] + " centery:" + circleCenter[currentImage][1] + " scale:" + sc);
+		// console.log(" -> centerx:" + circleData[currentImage].center[0] + " centery:" + circleData[currentImage].center[1] + " scale:" + sc);
 		// console.log(" -> cw:" + cw + " ch:" + ch + " -> cr:" + cr + " imw:" + img.width + " imgh:" + img.height + " ir:" + imageRatio);
 		// console.log(" -> mx:" + mx + " my:" + my);
 		for (i=0;i<l;i++) {
@@ -230,24 +212,24 @@
 	}
 
 	function createMasks() {
-		var i, l = circleData[currentImage].length;
+		var i, l = circleData[currentImage].circles.length;
 		for (i=0;i<l;i++) {
 			// masks can only be shapes.
 			var m = new createjs.Shape();
 			// the mask's position will be relative to the parent of its target:
-			m.x = circleCenter[currentImage][0];
-			m.y = circleCenter[currentImage][1];
+			m.x = circleData[currentImage].center[0];
+			m.y = circleData[currentImage].center[1];
 			
 			var mShape = m.graphics.beginFill();
 			if (debug) {
 				mShape = mShape.beginStroke("#FF0").setStrokeStyle(5);
 			}
-			mShape.drawCircle(0,0,circleData[currentImage][i].radius).endStroke();
+			mShape.drawCircle(0,0,circleData[currentImage].circles[i].radius).endStroke();
 			var mBmp = new createjs.Bitmap(img);
-			mBmp.regX = circleCenter[currentImage][0];
-			mBmp.regY = circleCenter[currentImage][1];
-			mBmp.x = circleCenter[currentImage][0];
-			mBmp.y = circleCenter[currentImage][1];
+			mBmp.regX = circleData[currentImage].center[0];
+			mBmp.regY = circleData[currentImage].center[1];
+			mBmp.x = circleData[currentImage].center[0];
+			mBmp.y = circleData[currentImage].center[1];
 			mBmp.mask = m;
 
 			masks.push({bmp:mBmp,mask:m});
@@ -259,7 +241,7 @@
 	}
 
 	function randomizePuzzle() {
-		var i, l = circleData[currentImage].length;
+		var i, l = circleData[currentImage].circles.length;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
 			mm.rotation = Math.random() * 360;
