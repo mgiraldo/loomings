@@ -7,15 +7,23 @@
 	var rotTolerance = 2.5;
 
 	var circleData = [];
-	circleData.push({photo:"mayo.jpg",center:[813.1,515.5],point:[880,900],circles:[{radius:231,axis:'X',power:-2}]});
-	circleData.push({photo:"corrientes.jpg",center:[943.85,336.45],point:[1000,100],circles:[{radius:222,axis:'X',power:-3}, {radius:137.2,axis:'Y',power:3.3}]});
-	circleData.push({photo:"florida.jpg",center:[707.8,803.95],point:[400,900],circles:[{radius:210,axis:'Y',power:3}, {radius:90,axis:'X',power:-5.1}]});
-	circleData.push({photo:"florida2.jpg",center:[670.65,838.65],point:[1500,870],circles:[{radius:175,axis:'X',power:-2}, {radius:142.5,axis:'Y',power:-4}]});
-	circleData.push({photo:"belgrano1.jpg",center:[873,803],point:[900,600],circles:[{radius:236.5,axis:'X',power:-2}, {radius:90,axis:'Y',power:3.4}]});
-	circleData.push({photo:"belgrano2.jpg",center:[757,718],point:[300,700],circles:[{radius:319,axis:'Y',power:3}, {radius:61.5,axis:'X',power:-2.8}]});
-	circleData.push({photo:"chino1.jpg",center:[864,574],point:[1400,170],circles:[{radius:458,axis:'X',power:-2}, {radius:212,axis:'Y',power:-5.3}]});
-	circleData.push({photo:"chino3.jpg",center:[392,660],point:[1000,440],circles:[{radius:192.5,axis:'Y',power:-4}, {radius:127,axis:'X',power:5.2}]});
-	circleData.push({photo:"prueba33.jpg",center:[888.3,622.7],point:[100,640],circles:[{radius:408.5,axis:'Y',power:-1}, {radius:295,axis:'X',power:3}, {radius:168.5,axis:'X',power:-4}]});
+
+	circleData.push({photo:"1.jpg",center:[813,515],point:[800,900],circles:[{radius:231,axis:'X',power:2}]});
+	circleData.push({photo:"2.jpg",center:[830,660],point:[1000,100],circles:[{radius:141,axis:'Y',power:-3}]});
+	circleData.push({photo:"4.jpg",center:[873,803],point:[400,900],circles:[{radius:237,axis:'X',power:-2}, {radius:90,axis:'Y',power:2.3}]});
+	circleData.push({photo:"5.jpg",center:[757,718],point:[1500,870],circles:[{radius:319,axis:'Y',power:-4}, {radius:62,axis:'X',power:-3.3}]});
+	circleData.push({photo:"6.jpg",center:[864,574],point:[900,600],circles:[{radius:458,axis:'Y',power:-1}, {radius:212,axis:'X',power:3.6}]});
+	circleData.push({photo:"7.jpg",center:[392,660],point:[300,700],circles:[{radius:193,axis:'X',power:2}, {radius:127,axis:'Y',power:-2.7}]});
+	circleData.push({photo:"8.jpg",center:[1011,650],point:[1400,170],circles:[{radius:135,axis:'Y',power:-3}, {radius:64,axis:'X',power:4.3}]});
+	circleData.push({photo:"10.jpg",center:[933,640],point:[1000,440],circles:[{radius:341,axis:'X',power:3}, {radius:255,axis:'Y',power:-3.3}]});
+	circleData.push({photo:"11.jpg",center:[607,627],point:[100,640],circles:[{radius:399,axis:'Y',power:3}, {radius:176,axis:'X',power:1.4}]});
+	circleData.push({photo:"13.jpg",center:[807,727],point:[900,100],circles:[{radius:297,axis:'X',power:-4}, {radius:172,axis:'Y',power:-5.1}]});
+	circleData.push({photo:"14.jpg",center:[826,650],point:[300,900],circles:[{radius:379,axis:'Y',power:-3}, {radius:236,axis:'X',power:1.3}, {radius:97,axis:'Y',power:-2}]});
+	circleData.push({photo:"15.jpg",center:[948,687],point:[1400,870],circles:[{radius:349,axis:'Y',power:1}, {radius:277,axis:'X',power:-4.3}, {radius:90,axis:'X',power:-3}]});
+	circleData.push({photo:"16.jpg",center:[888,623],point:[1000,700],circles:[{radius:409,axis:'X',power:-2}, {radius:295,axis:'Y',power:-3.7}, {radius:169,axis:'Y',power:3}]});
+	circleData.push({photo:"17.jpg",center:[710,757],point:[100,170],circles:[{radius:267,axis:'X',power:-2}, {radius:136,axis:'Y',power:2}, {radius:75,axis:'Y',power:4}]});
+	circleData.push({photo:"18.jpg",center:[933,339],point:[1000,440],circles:[{radius:328,axis:'X',power:-3}, {radius:271,axis:'Y',power:4}, {radius:67,axis:'X',power:-2}]});
+	circleData.push({photo:"19.jpg",center:[833,637],point:[400,900],circles:[{radius:390,axis:'Y',power:4}, {radius:147,axis:'X',power:-3.8}, {radius:91,axis:'X',power:4}]});
 
 	var currentImage = 0;
 
