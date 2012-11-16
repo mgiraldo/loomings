@@ -18,18 +18,18 @@
 	circleData.push({photo:"10.jpg",center:[933,640],point:[1000,440],circles:[{radius:341,axis:'X',power:3}, {radius:255,axis:'Y',power:-3.3}]});
 	circleData.push({photo:"11.jpg",center:[607,627],point:[100,640],circles:[{radius:399,axis:'Y',power:3}, {radius:176,axis:'X',power:1.4}]});
 	circleData.push({photo:"13.jpg",center:[807,727],point:[900,100],circles:[{radius:297,axis:'X',power:-4}, {radius:172,axis:'Y',power:-5.1}]});
-	circleData.push({photo:"14.jpg",center:[826,650],point:[300,900],circles:[{radius:379,axis:'Y',power:-3}, {radius:236,axis:'X',power:1.3}, {radius:97,axis:'Y',power:-2}]});
-	circleData.push({photo:"15.jpg",center:[948,687],point:[1400,870],circles:[{radius:349,axis:'Y',power:1}, {radius:277,axis:'X',power:-4.3}, {radius:90,axis:'X',power:-3}]});
-	circleData.push({photo:"16.jpg",center:[888,623],point:[1000,700],circles:[{radius:409,axis:'X',power:-2}, {radius:295,axis:'Y',power:-3.7}, {radius:169,axis:'Y',power:3}]});
-	circleData.push({photo:"17.jpg",center:[710,757],point:[100,170],circles:[{radius:267,axis:'X',power:-2}, {radius:136,axis:'Y',power:2}, {radius:75,axis:'Y',power:4}]});
-	circleData.push({photo:"18.jpg",center:[933,339],point:[1000,440],circles:[{radius:328,axis:'X',power:-3}, {radius:271,axis:'Y',power:4}, {radius:67,axis:'X',power:-2}]});
-	circleData.push({photo:"19.jpg",center:[833,637],point:[400,900],circles:[{radius:390,axis:'Y',power:4}, {radius:147,axis:'X',power:-3.8}, {radius:91,axis:'X',power:4}]});
+	circleData.push({photo:"14.jpg",center:[826,650],point:[300,900],circles:[{radius:379,axis:'Y',power:-2}, {radius:236,axis:'X',power:1.3}, {radius:97,axis:'Y',power:-2}]});
+	circleData.push({photo:"15.jpg",center:[948,687],point:[1400,870],circles:[{radius:349,axis:'Y',power:-3}, {radius:277,axis:'X',power:-4.3}, {radius:90,axis:'Y',power:-3}]});
+	circleData.push({photo:"16.jpg",center:[888,623],point:[1000,700],circles:[{radius:409,axis:'X',power:2}, {radius:295,axis:'Y',power:-3.7}, {radius:169,axis:'X',power:2}]});
+	circleData.push({photo:"17.jpg",center:[710,757],point:[100,170],circles:[{radius:267,axis:'X',power:4}, {radius:136,axis:'Y',power:2}, {radius:75,axis:'X',power:4}]});
+	circleData.push({photo:"18.jpg",center:[933,339],point:[1000,440],circles:[{radius:328,axis:'X',power:-2}, {radius:271,axis:'Y',power:4}, {radius:67,axis:'X',power:-2}]});
+	circleData.push({photo:"19.jpg",center:[833,637],point:[400,900],circles:[{radius:390,axis:'Y',power:4}, {radius:147,axis:'X',power:-3.8}, {radius:91,axis:'Y',power:4}]});
 
 	var currentImage = 0;
 
 	var debug = false;
 
-	var restartId, winDelay = 1000;
+	var restartId, winDelay = 3000;
 
 	
 	function init() {
