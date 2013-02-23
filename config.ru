@@ -23,7 +23,7 @@ map "/favicon.ico" do
       {
         'Content-Type'  => 'image/x-icon'
       },
-      File.open('public/index.html', File::RDONLY)
+      File.open('public/favicon.ico', File::RDONLY)
     ]
 }
 
