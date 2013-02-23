@@ -1,30 +1,3 @@
-use Rack::Static, 
-  :urls => ["/stylesheets", "/images", "/js"],
-  :root => "public"
+require './app'
 
-map "/" do
-  run lambda { |env|
-    [
-      200, 
-      {
-        'Content-Type'  => 'text/html', 
-        'Cache-Control' => 'public, max-age=86400' 
-      },
-      File.open('public/index.html', File::RDONLY)
-    ]
-}
-
-end
-
-map "/favicon.ico" do
-  run lambda { |env|
-    [
-      200, 
-      {
-        'Content-Type'  => 'image/x-icon'
-      },
-      File.open('public/favicon.ico', File::RDONLY)
-    ]
-}
-
-end
+run Sinatra::Application
