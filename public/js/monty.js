@@ -8,6 +8,10 @@
 
 	var circleData = [];
 
+	var touchstart = {x:-1,y:-1}, ismoving = -1, rotationstart = 0;
+
+	var currentScale = 1;
+
 	circleData.push({photo:"1.jpg",center:[813,515],point:[800,900],circles:[{radius:231,axis:'X',power:2}]});
 	circleData.push({photo:"2.jpg",center:[830,660],point:[1000,100],circles:[{radius:141,axis:'Y',power:-3}]});
 	circleData.push({photo:"4.jpg",center:[873,803],point:[400,900],circles:[{radius:237,axis:'X',power:-2}, {radius:90,axis:'Y',power:2.3}]});
@@ -48,6 +52,25 @@
 		addListeners();
 	}
 
+	function distanceFromCenter(x, y) {
+		var d = 0;
+		// scale
+		var sc = currentScale, newx=0, newy=0;
+		var cw = canvas.width;
+		var ch = canvas.height;
+		newx = (cw - (img.width*sc))*.5;
+		newy = (ch - (img.height*sc))*.5;
+		d = Math.sqrt(
+			(
+				(x-newx-circleData[currentImage].center[0]*sc)*(x-newx-circleData[currentImage].center[0]*sc)
+			) + (
+				(y-newy-circleData[currentImage].center[1]*sc)*(y-newy-circleData[currentImage].center[1]*sc)
+			)
+		);
+		// console.log(x, y, d, sc, d);
+		return d;
+	}
+
 	function loadCurrentImage() {
 		//wait for the image to load
 		img = new Image();
@@ -65,13 +88,34 @@
 			// bind to touchstart
 			stage.onPress = function(mouseEvent) {
 				// console.log("pressed");
-				mouseEvent.onMouseMove = onMove;
+				touchstart = {x:mouseEvent.stageX,y:mouseEvent.stageY};
+				var d = distanceFromCenter(mouseEvent.stageX, mouseEvent.stageY);
+				// what circle we moving
+				ismoving = whatCircle(d);
+				rotationstart = masks[ismoving].bmp.rotation;
+				if (d < circleData[currentImage].circles[0].radius*currentScale){
+					// console.log("moving", ismoving);
+					mouseEvent.onMouseMove = onMove;
+				}
 			}
 		} else {
 			// bind to mousemove
 			stage.mouseEnabled = true;
 			canvas.onmousemove  = onMove;
 		}
+	}
+
+	function whatCircle(distance) {
+		var c = -1;
+
+		var i, l = circleData[currentImage].circles.length-1;
+		for (i=l;i>=0;i--) {
+			if (circleData[currentImage].circles[i].radius*currentScale > distance) {
+				return i;
+			}
+		}
+
+		return c;
 	}
 
 	function removeInteractiveListeners() {
@@ -84,14 +128,7 @@
 		}
 	}
 
-	function onMove(mouseEvent) {
-		if (!imageLoaded || hasWon) return;
-		var axis = "";
-		if (Modernizr.touch){
-			axis = "stage";
-		} else {
-			axis = "page";
-		}
+	function calculateScale() {
 		// scale
 		var sc, cw, ch, cr;
 		cw = canvas.width;
@@ -104,29 +141,73 @@
 			// scale based on height
 			sc = ch / img.height;
 		}
-		// console.log(mouseEvent);
-	    if(!mouseEvent){ mouseEvent = window.event; }
-		var i, l = circleData[currentImage].circles.length;
+		return sc;
+	}
+
+	function onMove(mouseEvent) {
+		var sc = currentScale;
+
+		if (!imageLoaded || hasWon) return;
+		var axis = "";
+		if (Modernizr.touch){
+			axis = "stage";
+		} else {
+			axis = "page";
+		}
+
+		var di = distanceFromCenter(mouseEvent.pageX, mouseEvent.pageY);
+		// what circle we moving
+		var im = whatCircle(di);
+
+		// console.log(di, im);
+
 		var correct = 0;
-		var d, dx, dy, px, py, dd;
-		px = circleData[currentImage].point[0] * sc, py = circleData[currentImage].point[1] * sc;
-		dx = mouseEvent[axis + "X"] - px, dy = mouseEvent[axis + "Y"] - py;
-		dd = (dx * dx) + (dy * dy);
-		// console.log(px, py, dx, dy, dd);
-		var str = "";
-		for (i=0;i<l;i++) {
-			mm = masks[i].bmp;
-			d = mouseEvent[axis + "" + circleData[currentImage].circles[i].axis];
-			if (circleData[currentImage].circles[i].axis == "X") {
-				d -= px;
-			} else {
-				d -= py;
+		var i, l = circleData[currentImage].circles.length;
+
+		var mm;
+		var cw = canvas.width;
+		var ch = canvas.height;
+		var sc = currentScale;
+		newx = (cw - (img.width*sc))*.5;
+		newy = (ch - (img.height*sc))*.5;
+
+		if (Modernizr.touch){
+			mm = masks[ismoving].bmp;
+			var center = circleData[currentImage].center;
+			// console.log(touchstart, newy, center, sc);
+			var initheta = Math.atan2((touchstart.y-newy-(center[1]*sc)), (touchstart.x-newx-(center[0]*sc))) * 180 / Math.PI;
+			var fintheta = Math.atan2((mouseEvent.stageY-newy-(center[1]*sc)), (mouseEvent.stageX-newx-(center[0]*sc))) * 180 / Math.PI;
+			mm.rotation = rotationstart + (fintheta - initheta);
+			// console.log(rotationstart, center, initheta, fintheta);
+
+			for (i=0;i<l;i++) {
+				mm = masks[i].bmp;
+				var moduloRot = Math.abs(mm.rotation%360);
+				if (moduloRot <= rotTolerance || moduloRot >= 360 - rotTolerance) correct++;
 			}
-			mm.rotation = d * circleData[currentImage].circles[i].power; // mouseEvent[axis + circleData[currentImage].circles[i].axis] * (circleData[currentImage].circles[i].power);
-			// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
-			var moduloRot = Math.abs(mm.rotation%360);
-			if (moduloRot <= rotTolerance || moduloRot >= 360 - rotTolerance) correct++;
-			str += Math.abs(mm.rotation%360) + " ";
+		} else {
+			// console.log(mouseEvent);
+		    if(!mouseEvent){ mouseEvent = window.event; }
+			var d, dx, dy, px, py, dd;
+			px = circleData[currentImage].point[0] * sc, py = circleData[currentImage].point[1] * sc;
+			dx = mouseEvent[axis + "X"] - px, dy = mouseEvent[axis + "Y"] - py;
+			dd = (dx * dx) + (dy * dy);
+			// console.log(px, py, dx, dy, dd);
+			var str = "";
+			for (i=0;i<l;i++) {
+				mm = masks[i].bmp;
+				d = mouseEvent[axis + "" + circleData[currentImage].circles[i].axis];
+				if (circleData[currentImage].circles[i].axis == "X") {
+					d -= px;
+				} else {
+					d -= py;
+				}
+				mm.rotation = d * circleData[currentImage].circles[i].power; // mouseEvent[axis + circleData[currentImage].circles[i].axis] * (circleData[currentImage].circles[i].power);
+				// console.log(" => " + mm.x + ":" + mm.y + " r:" + (mm.rotation%360));
+				var moduloRot = Math.abs(mm.rotation%360);
+				if (moduloRot <= rotTolerance || moduloRot >= 360 - rotTolerance) correct++;
+				str += Math.abs(mm.rotation%360) + " ";
+			}
 		}
 		// console.log(str);
 		if (correct == l) {
@@ -186,19 +267,13 @@
     }
 
 	function scaleImage () {
-		var sc, cw, ch, cr, newx = 0, newy = 0;
+		currentScale = calculateScale();
+		var sc = currentScale;
+		var cw, ch, cr, newx = 0, newy = 0;
 		cw = canvas.width;
 		ch = canvas.height;
-		cr = cw / ch;
-		if (cr < imageRatio) {
-			// scale based on width
-			sc = cw / img.width;
-			newy = (ch - (img.height*sc))/2;
-		} else {
-			// scale based on height
-			sc = ch / img.height;
-			newx = (cw - (img.width*sc))/2;
-		}
+		newx = (cw - (img.width*sc))*.5;
+		newy = (ch - (img.height*sc))*.5;
 		backgroundImage.x = newx;
 		backgroundImage.y = newy;
 		backgroundImage.scaleX = backgroundImage.scaleY = sc;
@@ -253,7 +328,7 @@
 		var i, l = circleData[currentImage].circles.length;
 		for (i=0;i<l;i++) {
 			mm = masks[i].bmp;
-			mm.rotation = Math.random() * 360;
+			mm.rotation = Math.random() * 300 + 30;
 		}
 	}
 
