@@ -85,8 +85,15 @@
 
 	function addInteractiveListeners() {
 		if (Modernizr.touch){
+			document.getElementById("asterisk").addEventListener("touchend", function (e) {
+				document.getElementById("text").className = "visible";
+				document.getElementById("credit").className = "visible";
+				document.getElementById("content").className = "visible";
+			});
 			// bind to touchstart
 			stage.onPress = function(mouseEvent) {
+				document.getElementById("text").className = "";
+				document.getElementById("content").className = "";
 				// console.log("pressed");
 				touchstart = {x:mouseEvent.stageX,y:mouseEvent.stageY};
 				var d = distanceFromCenter(mouseEvent.stageX, mouseEvent.stageY);
