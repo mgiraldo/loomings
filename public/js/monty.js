@@ -38,6 +38,11 @@
 
 	
 	function init() {
+		if (!Modernizr.canvas) {
+			document.getElementById("nocanvas").className = "visible";
+			document.getElementById("wrapper").className = "hidden";
+			return;
+		}
 		canvas = document.getElementById("puzzleCanvas");
 
 		// create a new stage and point it at our canvas:
